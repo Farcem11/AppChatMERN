@@ -16,6 +16,12 @@ export class UserRoute
 
     private setUserRoutes() : void 
     {
+        this.app.route('/')
+        .get((request : Request, response : Response) => 
+        {
+            response.json({message : "Get request"})
+        });
+
         this.app.route('/user')
         .post(this.userController.addNewUser)
         .get(this.userController.getUsers);

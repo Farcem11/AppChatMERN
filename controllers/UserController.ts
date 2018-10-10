@@ -6,20 +6,15 @@ const User = mongoose.model('User', UserSchema);
 
 export class UserController
 {
-    private responseHandler(error, response, data)
-    {
-        if(error) response.send(error);
-            
-        response.json(data);
-    }
-
     public addNewUser(request : Request, response : Response)
     {
         let newUser = new User(request.body);
 
         newUser.save((error, user) =>
         {
-            this.responseHandler(response, error, user);
+            if(error) response.send(error);
+            
+            response.json(user);
         })
     }
 
@@ -27,7 +22,9 @@ export class UserController
     {
         User.find({}, (error, users) =>
         {
-            this.responseHandler(response, error, users);
+            if(error) response.send(error);
+            
+        response.json(users);
         })
     }
 
@@ -35,7 +32,9 @@ export class UserController
     {
         User.findById(request.params.userId, (error, user) =>
         {
-            this.responseHandler(response, error, user);
+            if(error) response.send(error);
+            
+            response.json(user);
         })
     }
 
@@ -45,7 +44,9 @@ export class UserController
 
         User.findOneAndUpdate({ _id : userId }, request.body, { new : true }, (error, user) =>
         {
-            this.responseHandler(response, error, user);
+            if(error) response.send(error);
+            
+            response.json(user);
         })
     }
 
@@ -55,8 +56,10 @@ export class UserController
 
         User.remove({ _id : userId }, (error) =>
         {
-            const data = { message: 'Successfully deleted contact!'};
-            this.responseHandler(response, error, data);
+            const message = { message: 'Successfully deleted contact!'};
+            if(error) response.send(error);
+            
+            response.json(message);
         })
     }
 }

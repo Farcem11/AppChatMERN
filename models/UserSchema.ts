@@ -19,7 +19,7 @@ export const UserSchema = new Schema({
     Phone: {
         type: Number            
     },
-    Created_date: {
+    CreatedDate: {
         type: Date,
         default: Date.now
     }
