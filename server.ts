@@ -4,7 +4,8 @@ import * as fs from 'fs';
 
 const PORT = 3000;
 
-const httpsOptions = {
+const httpsOptions = 
+{
     key: fs.readFileSync('./config/key.pem'),
     cert: fs.readFileSync('./config/cert.pem')
 }
