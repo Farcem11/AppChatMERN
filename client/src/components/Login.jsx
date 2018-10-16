@@ -4,16 +4,11 @@ import { login } from '../actionCreators';
 
 class Login extends Component
 {
-    constructor()
+    state =
     {
-        super();
-
-        this.state =
-        {
-            name : '',
-            password : ''
-        }
-    }
+        name : '',
+        password : ''
+    };
 
     handleOnChange = (event) =>
     {
@@ -31,7 +26,7 @@ class Login extends Component
             <div>
                 <div>
                     <div className="form-group">
-                        <label htmlFor="exampleInputEmail1">Email or User name</label>
+                        <label htmlFor="exampleInputEmail1">Email / User name</label>
                         <input name = "name" onChange = {this.handleOnChange} type="text" className="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter email or username"/>
                         <small id="emailHelp" className="form-text text-muted">We'll never share your email with anyone else.</small>
                     </div>
