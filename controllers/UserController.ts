@@ -1,6 +1,7 @@
 import * as mongoose from 'mongoose';
 import { UserSchema } from '../models/UserSchema';
 import { Request, Response } from 'express';
+import * as sha256 from 'sha256';
 
 const User = mongoose.model('User', UserSchema);
 
@@ -8,6 +9,7 @@ export class UserController
 {
     public addNewUser(request : Request, response : Response)
     {
+        request.body.Password = sha256(request.body.Password);
         let newUser = new User(request.body);
 
         newUser.save((error, user) =>
@@ -23,14 +25,26 @@ export class UserController
         User.find({}, (error, users) =>
         {
             if(error) response.send(error);
-            
-        response.json(users);
+
+            response.json(users);
         })
     }
 
-    public getUserById(request : Request, response : Response)
+    public getUser(request : Request, response : Response)
     {
-        User.findById(request.params.userId, (error, user) =>
+        const password = sha256(request.body.password);
+        User.findOne( 
+            { $and : 
+                [ 
+                    { $or : 
+                        [ 
+                            { Email : request.body.name }, 
+                            { UserName : request.body.name } 
+                        ] 
+                    },
+                    { Password : password } 
+                ] 
+            }, (error, user) =>
         {
             if(error) response.send(error);
             
@@ -40,7 +54,7 @@ export class UserController
 
     public updateUser(request : Request, response : Response)
     {
-        const userId = request.params.userI;
+        const userId = request.params.userId;
 
         User.findOneAndUpdate({ _id : userId }, request.body, { new : true }, (error, user) =>
         {
@@ -52,14 +66,13 @@ export class UserController
 
     public deleteUser(request : Request, response : Response)
     {
-        const userId = request.params.userI;
+        const userId = request.params.userId;
 
         User.remove({ _id : userId }, (error) =>
         {
-            const message = { message: 'Successfully deleted contact!'};
             if(error) response.send(error);
             
-            response.json(message);
+            response.json({ deleted : true });
         })
     }
 }

@@ -27,8 +27,10 @@ export class UserRoute
         .get(this.userController.getUsers);
 
         this.app.route('/user/:userId')
-        .get(this.userController.getUserById)
         .put(this.userController.updateUser)
         .delete(this.userController.deleteUser)
+
+        this.app.route('/login')
+        .post(this.userController.getUser)
     }
 }
