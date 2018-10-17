@@ -24,4 +24,12 @@ const login = ({name, password}) =>
     };
 }
 
-export { login }
+const logout = () =>
+{
+    return {
+        type : ActionTypes.LOGOUT,
+        user : null
+    }
+}
+
+export { login, logout }

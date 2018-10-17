@@ -34,13 +34,13 @@ export class UserController
     {
         const password = sha256(request.body.password);
         User.findOne( 
-            { $and : 
+            { $and :
                 [ 
-                    { $or : 
+                    { $or :
                         [ 
-                            { Email : request.body.name }, 
-                            { UserName : request.body.name } 
-                        ] 
+                            { Email : request.body.name },
+                            { UserName : request.body.name }
+                        ]
                     },
                     { Password : password } 
                 ] 
