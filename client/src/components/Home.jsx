@@ -9,7 +9,7 @@ class Home extends Component
         
         return (
             <div>
-                <span> Welcome {user.FirstName + " " + user.LastName}</span>
+                <span> Welcome {user.data.FirstName + " " + user.data.LastName} </span>
             </div>
         )
     }

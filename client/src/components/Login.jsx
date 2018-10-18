@@ -1,15 +1,11 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { login } from '../actionCreators'
-import { Redirect } from 'react-router-dom'
+import { Redirect, Link } from 'react-router-dom'
 
 class Login extends Component
 {
-    state =
-    {
-        name : '',
-        password : ''
-    };
+    state = {};
 
     handleOnChange = (event) =>
     {
@@ -25,32 +21,31 @@ class Login extends Component
     {
         const { login, user } = this.props;
         
-        if(user === null)
+        if(!user.isAuthenticated)
         {
             return (
                 <div>
                     <div>
                         <div className="form-group">
                             <label htmlFor="exampleInputEmail1">Email / User name</label>
-                            <input name = "name" onChange = {this.handleOnChange} type="text" className="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter email or username"/>
+                            <input name = "Name" onChange = {this.handleOnChange} type="text" className="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter email or username"/>
                             <small id="emailHelp" className="form-text text-muted">We'll never share your email with anyone else.</small>
                         </div>
                         <div className="form-group">
                             <label htmlFor="exampleInputPassword1">Password</label>
-                            <input name = "password" onChange = {this.handleOnChange} type="password" className="form-control" id="exampleInputPassword1" placeholder="Password"/>
-                        </div>
-                        <div className="form-group form-check">
-                            <input type="checkbox" className="form-check-input" id="exampleCheck1"/>
-                            <label className="form-check-label" htmlFor="exampleCheck1">Keep me sign in</label>
+                            <input name = "Password" onChange = {this.handleOnChange} type="password" className="form-control" id="exampleInputPassword1" placeholder="Password"/>
                         </div>
                         <button onClick = {() => login(this.state)} className="btn btn-primary">Login</button>
+                        <div className="align-items-start">
+                            <Link className="nav-link" to="/signup">Create an account</Link> 
+                        </div>
                     </div>
                 </div>
             )
         }
         else
         {
-            return <Redirect to="/home"/>
+            return <Redirect to="/"/>
         }
     }
 };

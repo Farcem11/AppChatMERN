@@ -4,9 +4,10 @@ import Login from './components/Login'
 import Home from './components/Home'
 import NotFound from './components/NotFound'
 import PrivateRoute from './components/PrivateRoute'
+import SignUp from './components/SignUp'
 import Navigator from './components/Navigator'
 
-import './App.css';
+import './App.sass';
 
 class App extends Component
 {
@@ -14,12 +15,13 @@ class App extends Component
 	{
 		return (
 			<Router>
-				<div className = "App">
-					<Navigator/>
-					<div className = "App-header">
+				<div className="App">
+					<div className="container">
+						<Navigator/>
 						<Switch>
 							<Route path="/login" component={Login} />
-							<PrivateRoute path="/home" component={Home} />
+							<Route path="/signup" component={SignUp} />
+							<PrivateRoute exact path="/" component={Home} />
 							<Route component={NotFound} />
 						</Switch>
 					</div>

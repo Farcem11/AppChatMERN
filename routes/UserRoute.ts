@@ -5,7 +5,7 @@ import { UserController } from '../controllers/UserController';
 export class UserRoute
 {
     private app : express.Application;
-    public userController : UserController;
+    private userController : UserController;
 
     constructor(app : express.Application)
     {
@@ -17,20 +17,35 @@ export class UserRoute
     private setUserRoutes() : void 
     {
         this.app.route('/')
-        .get((request : Request, response : Response) => 
+        .get((request, response) => 
         {
             response.json({message : "Get request"})
         });
 
         this.app.route('/user')
-        .post(this.userController.addNewUser)
-        .get(this.userController.getUsers);
+        .post((request, response) => 
+        {
+            this.userController.addNewUser(request, response);
+        })
+        .get((request, response) => 
+        {
+            this.userController.getUsers(request, response);
+        })
 
         this.app.route('/user/:userId')
-        .put(this.userController.updateUser)
-        .delete(this.userController.deleteUser)
+        .put((request, response) => 
+        {
+            this.userController.updateUser(request, response);
+        })
+        .delete((request, response) => 
+        {
+            this.userController.deleteUser(request, response);
+        })
 
         this.app.route('/login')
-        .post(this.userController.getUser)
+        .post((request, response) =>
+        {
+            this.userController.getUser(request, response);
+        })
     }
 }

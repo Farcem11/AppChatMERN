@@ -15,7 +15,7 @@ class PrivateRoute extends Component
                 {
                     (props) =>
                     {
-                        if(user !== null)
+                        if(user.isAuthenticated)
                         {
                             return <Component {...props} />
                         }

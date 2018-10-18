@@ -7,72 +7,96 @@ const User = mongoose.model('User', UserSchema);
 
 export class UserController
 {
-    public addNewUser(request : Request, response : Response)
+    private errorStatus : number;
+
+    constructor()
+    {
+        this.errorStatus = 400;
+    }
+
+    public async addNewUser(request : Request, response : Response)
     {
         request.body.Password = sha256(request.body.Password);
         let newUser = new User(request.body);
 
-        newUser.save((error, user) =>
+        try
         {
-            if(error) response.send(error);
-            
+            const user = await newUser.save()
             response.json(user);
-        })
-    }
-
-    public getUsers(request : Request, response : Response)
-    {
-        User.find({}, (error, users) =>
+        }
+        catch(error)
         {
-            if(error) response.send(error);
-
-            response.json(users);
-        })
+            response.status(this.errorStatus).send(error);
+        }
     }
 
-    public getUser(request : Request, response : Response)
+    public async getUsers(request : Request, response : Response)
     {
-        const password = sha256(request.body.password);
-        User.findOne( 
-            { $and :
+        try
+        {
+            const users = await User.find({});
+            response.json(users);
+        }
+        catch(error)
+        {
+            response.status(this.errorStatus).send(error);
+        }
+    }
+
+    public async getUser(request : Request, response : Response)
+    {
+        const password = sha256(request.body.Password);
+        try
+        {
+            const user = await User.findOne( 
+            { 
+                $and :
                 [ 
-                    { $or :
-                        [ 
-                            { Email : request.body.name },
-                            { UserName : request.body.name }
+                    { 
+                        $or :
+                        [
+                            { Email : request.body.Name },
+                            { UserName : request.body.Name }
                         ]
                     },
                     { Password : password } 
                 ] 
-            }, (error, user) =>
-        {
-            if(error) response.send(error);
-            
+            });
             response.json(user);
-        })
+        }
+        catch(error)
+        {
+            response.status(this.errorStatus).send(error);
+        }
     }
 
-    public updateUser(request : Request, response : Response)
+    public async updateUser(request : Request, response : Response)
     {
         const userId = request.params.userId;
 
-        User.findOneAndUpdate({ _id : userId }, request.body, { new : true }, (error, user) =>
+        try 
         {
-            if(error) response.send(error);
-            
+            const user = await User.findOneAndUpdate({ _id : userId }, request.body, { new : true });   
             response.json(user);
-        })
+        } 
+        catch(error) 
+        {
+            response.status(this.errorStatus).send(error);
+        }
     }
 
-    public deleteUser(request : Request, response : Response)
+    public async deleteUser(request : Request, response : Response)
     {
         const userId = request.params.userId;
 
-        User.remove({ _id : userId }, (error) =>
+        try 
         {
-            if(error) response.send(error);
-            
-            response.json({ deleted : true });
-        })
+            const res = User.remove({ _id : userId });
+            response.json(res);            
+        } 
+        catch(error) 
+        {
+            response.status(this.errorStatus).send(error);  
+        }
     }
 }
