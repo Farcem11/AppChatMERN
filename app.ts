@@ -9,15 +9,19 @@ var properties = PropertiesReader('./database/database.properties');
 class App 
 {
     public app : express.Application;
-    public userRoute : UserRoute;
     public mongoUrl : String;
 
     constructor()
     {
         this.app = express();
         this.config();
-        this.userRoute = new UserRoute(this.app);
+        this.routesSetup();
         this.mongoSetup();
+    }
+
+    private routesSetup() : void
+    {
+        new UserRoute(this.app);
     }
 
     private config() : void

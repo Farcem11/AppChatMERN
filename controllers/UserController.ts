@@ -1,7 +1,8 @@
-import * as mongoose from 'mongoose';
-import { UserSchema } from '../models/UserSchema';
-import { Request, Response } from 'express';
-import * as sha256 from 'sha256';
+import * as mongoose from 'mongoose'
+import { UserSchema } from '../models/UserSchema'
+import { Request, Response } from 'express'
+import * as sha256 from 'sha256'
+import LoginError from '../errors/LoginError'
 
 const User = mongoose.model('User', UserSchema);
 
@@ -24,9 +25,9 @@ export class UserController
             const user = await newUser.save()
             response.json(user);
         }
-        catch(error)
+        catch({ name, message })
         {
-            response.status(this.errorStatus).send(error);
+            response.status(this.errorStatus).send({ name, message });
         }
     }
 
@@ -37,9 +38,9 @@ export class UserController
             const users = await User.find({});
             response.json(users);
         }
-        catch(error)
+        catch({ name, message })
         {
-            response.status(this.errorStatus).send(error);
+            response.status(this.errorStatus).send({ name, message });
         }
     }
 
@@ -62,11 +63,16 @@ export class UserController
                     { Password : password } 
                 ] 
             });
+            
+            if(user === null)
+            {
+                throw new LoginError("You have entered an invalid username / email or password");
+            }
             response.json(user);
         }
-        catch(error)
+        catch({ name, message })
         {
-            response.status(this.errorStatus).send(error);
+            response.status(this.errorStatus).send({ name, message });
         }
     }
 
@@ -79,9 +85,9 @@ export class UserController
             const user = await User.findOneAndUpdate({ _id : userId }, request.body, { new : true });   
             response.json(user);
         } 
-        catch(error) 
+        catch({ name, message }) 
         {
-            response.status(this.errorStatus).send(error);
+            response.status(this.errorStatus).send({ name, message });
         }
     }
 
@@ -94,9 +100,9 @@ export class UserController
             const res = User.remove({ _id : userId });
             response.json(res);            
         } 
-        catch(error) 
+        catch({ name, message }) 
         {
-            response.status(this.errorStatus).send(error);  
+            response.status(this.errorStatus).send({ name, message });  
         }
     }
 }

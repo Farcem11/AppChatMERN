@@ -1,32 +1,33 @@
 import * as mongoose from 'mongoose';
 
 const Schema = mongoose.Schema;
+const requiredMessage = 'Is missing';
 
 export const UserSchema = new Schema({
     UserName: 
     {
         type: String,
-        required: 'Enter an user name'
+        required: requiredMessage
     },
     FirstName: 
     {
         type: String,
-        required: 'Enter a first name'
+        required: requiredMessage
     },
     LastName: 
     {
         type: String,
-        required: 'Enter a last name'
+        required: requiredMessage
     },
     Email: 
     {
         type: String,
-        required: 'Enter an email'
+        required: requiredMessage
     },
     Password: 
     {
         type: String,
-        required: 'Enter a password'
+        required: requiredMessage
     },
     Phone: 
     {

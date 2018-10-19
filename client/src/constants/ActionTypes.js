@@ -1,4 +1,6 @@
-const LOGIN = 'LOGIN'
-const LOGOUT = 'LOGOUT'
-const REGISTER = 'REGISTER'
-export { LOGIN, LOGOUT, REGISTER }
+const LOGIN = 1
+const LOGOUT = 2
+const REGISTER = 3
+const SET_ALERT = 4
+
+export { LOGIN, LOGOUT, REGISTER, SET_ALERT }

@@ -68,7 +68,7 @@ class SignUp extends Component
                             </form>
                         </article>
                         <div className="border-top card-body text-center p-1">Have an account? <Link to="/login">Login</Link></div>
-                    </div> 
+                    </div>
                 </div>
             )
         }
