@@ -1,41 +1,59 @@
-import * as express from "express";
-import * as bodyParser from "body-parser";
-import { UserRoute } from './routes/UserRoute';
-import * as PropertiesReader from 'properties-reader';
-import * as mongoose from "mongoose";
+import * as express from "express"
+import * as bodyParser from "body-parser"
+import * as path from 'path'
+import { UserController } from './controllers/UserController'
+import { MessageController } from './controllers/MessageController'
+import * as PropertiesReader from 'properties-reader'
+import * as mongoose from 'mongoose'
+import { createServer, Server } from 'http';
+import * as socketIo from 'socket.io';
 
 var properties = PropertiesReader('./database/database.properties');
 
-class App 
+class App
 {
-    public app : express.Application;
-    public mongoUrl : String;
+    public express : express.Application;
+    public server: Server;
+    public io: SocketIO.Server;
+    private mongoUrl : string;
 
     constructor()
     {
-        this.app = express();
-        this.config();
-        this.routesSetup();
-        this.mongoSetup();
+        this.mongoUrl = properties.get('DB_URL') as string;
+        this.express = express();
+        this.server = createServer(this.express);
+        this.io = socketIo(this.server);
+        this.configSetup();
+        this.controllersSetup();
+        this.databaseSetup();
     }
 
-    private routesSetup() : void
+    private controllersSetup() : void
     {
-        new UserRoute(this.app);
+        new UserController(this.express);
+        new MessageController(this.express);
     }
 
-    private config() : void
+    private configSetup() : void
     {
-        this.app.use(bodyParser.json());
-        this.app.use(bodyParser.urlencoded({ extended: false }));
+        this.express.use(bodyParser.json());
+        this.express.use(bodyParser.urlencoded({ extended: false }));
+
+        // Serve the static files from the React app
+        this.express.use(express.static(path.join(__dirname, 'client/build')));
+
+        // Handles any requests that don't match the ones above
+        this.express.get('*', (req,res) =>
+        {
+            res.sendFile(path.join(__dirname + '/client/build/index.html'));
+        });
     }
 
-    private mongoSetup(): void
+    private databaseSetup(): void
     {
-        this.mongoUrl = properties.get('DB_URL') + properties.get('DB_NAME');
-        mongoose.Promise = global.Promise;
+        (<any>mongoose).Promise = global.Promise;
         mongoose.connect(this.mongoUrl, { useNewUrlParser: true });
     }
 }
 
-export default new App().app;
+export default new App();

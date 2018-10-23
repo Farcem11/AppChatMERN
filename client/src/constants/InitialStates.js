@@ -10,7 +10,8 @@ const ALERT =
 { 
     name : InitialStateProperties.STRING, 
     message : InitialStateProperties.STRING, 
-    type : InitialStateProperties.STRING
+    type : InitialStateProperties.STRING,
+    show : InitialStateProperties.BOOLEAN
 }
 
 export { USER, ALERT }

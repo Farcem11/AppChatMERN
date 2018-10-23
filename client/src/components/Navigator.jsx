@@ -41,7 +41,7 @@ class Navigator extends Component
         return (
             <div className="fixed-top">
                 { this.getNav() }
-                <Alert/>
+                <Alert showAlert/>
             </div>
         )
     }

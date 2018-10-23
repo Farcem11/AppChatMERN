@@ -3,7 +3,8 @@ import * as mongoose from 'mongoose';
 const Schema = mongoose.Schema;
 const requiredMessage = 'Is missing';
 
-export const UserSchema = new Schema({
+const UserSchema = new Schema(
+{
     UserName: 
     {
         type: String,
@@ -43,3 +44,5 @@ export const UserSchema = new Schema({
         type : String
     }
 });
+
+export const User = mongoose.model('User', UserSchema);

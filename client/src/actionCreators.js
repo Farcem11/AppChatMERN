@@ -99,12 +99,4 @@ const register = (user) =>
     }
 }
 
-const setAlert = (name, message) =>
-{
-    return {
-        type : ActionTypes.SET_ALERT,
-        alert : {name, message}
-    }
-}
-
-export { login, logout, register, setAlert }
+export { login, logout, register }

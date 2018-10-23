@@ -1,108 +1,40 @@
-import * as mongoose from 'mongoose'
-import { UserSchema } from '../models/UserSchema'
-import { Request, Response } from 'express'
-import * as sha256 from 'sha256'
-import LoginError from '../errors/LoginError'
+import * as express from "express";
+import { UserService } from '../services/UserService';
+import { BaseController } from "./BaseController";
 
-const User = mongoose.model('User', UserSchema);
-
-export class UserController
+export class UserController extends BaseController<UserService>
 {
-    private errorStatus : number;
-
-    constructor()
+    constructor(express : express.Application)
     {
-        this.errorStatus = 400;
+        super(new UserService(), express);
     }
 
-    public async addNewUser(request : Request, response : Response)
+    protected setRoutes() : void 
     {
-        request.body.Password = sha256(request.body.Password);
-        let newUser = new User(request.body);
+        this.express.route('/user')
+        .post((request, response) => 
+        {
+            this.service.addNewUser(request, response);
+        })
+        .get((request, response) => 
+        {
+            this.service.getUsers(request, response);
+        })
 
-        try
+        this.express.route('/user/:userId')
+        .put((request, response) => 
         {
-            const user = await newUser.save()
-            response.json(user);
-        }
-        catch({ name, message })
+            this.service.updateUser(request, response);
+        })
+        .delete((request, response) => 
         {
-            response.status(this.errorStatus).send({ name, message });
-        }
-    }
+            this.service.deleteUser(request, response);
+        })
 
-    public async getUsers(request : Request, response : Response)
-    {
-        try
+        this.express.route('/login')
+        .post((request, response) =>
         {
-            const users = await User.find({});
-            response.json(users);
-        }
-        catch({ name, message })
-        {
-            response.status(this.errorStatus).send({ name, message });
-        }
-    }
-
-    public async getUser(request : Request, response : Response)
-    {
-        const password = sha256(request.body.Password);
-        try
-        {
-            const user = await User.findOne( 
-            { 
-                $and :
-                [ 
-                    { 
-                        $or :
-                        [
-                            { Email : request.body.Name },
-                            { UserName : request.body.Name }
-                        ]
-                    },
-                    { Password : password } 
-                ] 
-            });
-            
-            if(user === null)
-            {
-                throw new LoginError("You have entered an invalid username / email or password");
-            }
-            response.json(user);
-        }
-        catch({ name, message })
-        {
-            response.status(this.errorStatus).send({ name, message });
-        }
-    }
-
-    public async updateUser(request : Request, response : Response)
-    {
-        const userId = request.params.userId;
-
-        try 
-        {
-            const user = await User.findOneAndUpdate({ _id : userId }, request.body, { new : true });   
-            response.json(user);
-        } 
-        catch({ name, message }) 
-        {
-            response.status(this.errorStatus).send({ name, message });
-        }
-    }
-
-    public async deleteUser(request : Request, response : Response)
-    {
-        const userId = request.params.userId;
-
-        try 
-        {
-            const res = User.remove({ _id : userId });
-            response.json(res);            
-        } 
-        catch({ name, message }) 
-        {
-            response.status(this.errorStatus).send({ name, message });  
-        }
+            this.service.getUser(request, response);
+        })
     }
 }

@@ -16,7 +16,7 @@ class App extends Component
 		return (
 			<Router>
 				<div className="App">
-					<div className="container">
+					<div className="App-Header">
 						<Navigator/>
 						<Switch>
 							<Route path="/login" component={Login} />
