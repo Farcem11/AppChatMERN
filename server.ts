@@ -10,10 +10,9 @@ App.server.listen(PORT, () =>
 App.io.on('connect', socket =>
 {
     console.log('Connected client on port %s.', PORT);
-
-    socket.on('message', (m: String) => 
+    
+    socket.on('message', (message: String, fn : Function) => 
     {
-        console.log('[server](message): %s', m);
-        App.io.emit('message', 'Hi from server');
+        fn('All messages');
     });
 })

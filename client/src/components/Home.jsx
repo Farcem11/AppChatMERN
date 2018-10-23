@@ -1,19 +1,9 @@
 import React, { Component } from 'react'
-import { connect } from 'react-redux';
-import io from 'socket.io-client'
+import { connect } from 'react-redux'
+import Chat from './Chat'
 
 class Home extends Component
 {
-    componentDidMount()
-    {
-        this.socket = io('/');
-        this.socket.on('message', m =>
-        {
-            console.log(m);
-        })
-        this.socket.emit('message', 'Hi from client')
-    }
-
     render()
     {
         const { user } = this.props;
@@ -21,6 +11,7 @@ class Home extends Component
         return (
             <div>
                 <span> Welcome {user.data.FirstName + " " + user.data.LastName} </span>
+                <Chat/>
             </div>
         )
     }

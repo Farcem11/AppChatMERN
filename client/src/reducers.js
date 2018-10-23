@@ -1,5 +1,6 @@
 import * as ActionTypes from './constants/ActionTypes';
 import * as InitialStates from './constants/InitialStates';
+import * as InitialStateProperties from './constants/InitialStateProperties';
 
 const user = (user = InitialStates.USER, action) =>
 {
@@ -39,4 +40,13 @@ const alert = (alert = InitialStates.ALERT, action) =>
     return alert;
 }
 
-export { user, alert }
+const messages = (messages = InitialStateProperties.ARRAY, action) =>
+{
+    if(action.type === ActionTypes.SEND_MESSAGE)
+    {
+        return action.messages;
+    }
+    return messages;
+}
+
+export { user, alert, messages }
