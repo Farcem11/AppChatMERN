@@ -7,12 +7,17 @@ App.server.listen(PORT, () =>
     console.log('Express server listening on port %s', PORT);
 })
 
-App.io.on('connect', socket =>
+App.io.on('connection', socket =>
 {
-    console.log('Connected client on port %s.', PORT);
+    console.log('Connected client on port %s: %s.', PORT, socket.id);
     
-    socket.on('message', (message: String, fn : Function) => 
+    socket.on('message', (text: String, userName : string) =>
     {
-        fn('All messages');
+        let messageResponse : Object = 
+        {
+            userName,
+            text
+        }
+        socket.broadcast.emit('message', messageResponse);
     });
 })

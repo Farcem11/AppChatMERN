@@ -2,9 +2,6 @@ import axios from "axios";
 
 import * as ActionTypes from './constants/ActionTypes';
 import * as AlertTypes from './constants/AlertTypes';
-import io from 'socket.io-client'
-
-const socket = io('/');
 
 const login = (request) =>
 {
@@ -102,15 +99,12 @@ const register = (user) =>
     }
 }
 
-const sendMessage = (message) =>
+const sendMessage = (messages) =>
 {
-    socket.emit('message', message, (messages) =>
-    {
-        return {
-            type : ActionTypes.SEND_MESSAGE,
-            messages
-        }
-    });
+    return {
+        type : ActionTypes.SEND_MESSAGE,
+        messages
+    }
 }
 
 export { login, logout, register, sendMessage }

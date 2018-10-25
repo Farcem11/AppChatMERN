@@ -1,17 +1,64 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import { sendMessage } from '../actionCreators'
+import io from 'socket.io-client'
 
 class Chat extends Component
 {
+    state =
+    {
+        messages : [],
+        message : ''
+    };
+
+    componentDidMount()
+    {
+        this.socket = io('/');
+        this.socket.on('message', (message) => 
+        {
+            this.setState(
+            {
+                messages : [...this.state.messages, message]
+            })
+        });
+    }
+
+    handleClick = () =>
+    {
+        console.log(this.props.user.data.UserName);
+
+        this.setState(
+        {
+            messages : [...this.state.messages, { text : this.state.message, userName : 'Me' }]
+        })
+
+        this.socket.emit('message', this.state.message, this.props.user.data.UserName);
+    }
+
+    handleOnChange = (event) =>
+    {
+        const {name, value} = event.target;
+        this.setState(
+        {
+            [name] : value
+        })
+    }
+
     render()
     {
-        const { messages } = this.props;
-        
+        const messagesObject = this.state.messages.map(message =>
+        {
+            return (
+                <div>
+                    <span>{message.userName}</span> : {message.text}
+                    <br/>
+                </div>
+            )
+        });
         return (
             <div>
-                <button onClick={()=> sendMessage('Hi')} > Send </button>
-                <span> {messages} </span>
+                <input type='text' onChange={this.handleOnChange} name='message' placeholder='Message'/>
+                <button onClick={() => this.handleClick()} > Send </button>
+                {messagesObject}
             </div>
         )
     }
@@ -20,17 +67,8 @@ class Chat extends Component
 const mapStateToProps = (state) =>
 {
     return {
-        messages : state.messages
+        user : state.user
     }
 }
 
-const mapDispatchToProps = (dispatch) =>
-{
-    return {
-        sendMessage(message) {
-            dispatch(sendMessage(message))
-        }
-    }
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(Chat)
+export default connect(mapStateToProps)(Chat)
